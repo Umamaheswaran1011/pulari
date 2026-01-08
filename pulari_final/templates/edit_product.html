@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product - Admin</title>
+    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <h1><i class="fas fa-edit"></i> Edit Product</h1>
+                <div class="header-actions">
+                    <a href="{% url 'admin_dashboard' %}" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <section class="form-section">
+                <div class="form-container">
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" class="product-form">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-id-badge"></i> Product ID
+                            </label>
+                            <input 
+                                type="text" 
+                                value="Product #{{ product.id }}"
+                                class="form-input" 
+                                disabled
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-tag"></i> Product Name *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                class="form-input" 
+                                placeholder="e.g., PVC Pipe 1 inch"
+                                value="{{ product.name }}"
+                                required
+                            >
+                            <small>Enter the product name clearly</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category" class="form-label">
+                                    <i class="fas fa-folder"></i> Category *
+                                </label>
+                                <select id="category" name="category" class="form-input" required>
+                                    <option value="PVC" {% if product.category == 'PVC' %}selected{% endif %}>PVC</option>
+                                    <option value="CPVC" {% if product.category == 'CPVC' %}selected{% endif %}>CPVC</option>
+                                    <option value="Metal" {% if product.category == 'Metal' %}selected{% endif %}>Metal</option>
+                                    <option value="Plastic" {% if product.category == 'Plastic' %}selected{% endif %}>Plastic</option>
+                                    <option value="Other" {% if product.category == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                                <small>Choose the product category</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price" class="form-label">
+                                    <i class="fas fa-rupee-sign"></i> Price (₹) *
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="price" 
+                                    name="price" 
+                                    step="0.01"
+                                    min="0"
+                                    class="form-input" 
+                                    value="{{ product.price }}"
+                                    required
+                                >
+                                <small>Enter product price</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="stock" class="form-label">
+                                    <i class="fas fa-cubes"></i> Stock Quantity *
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="stock" 
+                                    name="stock" 
+                                    min="0"
+                                    class="form-input" 
+                                    value="{{ product.stock }}"
+                                    required
+                                >
+                                <small>Update available stock quantity</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="image" class="form-label">
+                                    <i class="fas fa-image"></i> Product Image
+                                </label>
+                                <input 
+                                    type="file" 
+                                    id="image" 
+                                    name="image" 
+                                    class="form-input"
+                                    accept="image/*"
+                                >
+                                <small>Upload new product image (optional)</small>
+                                {% if product.image %}
+                                    <div class="image-preview">
+                                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        <p class="image-name">Current Image: {{ product.image.name }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-align-left"></i> Description *
+                            </label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="form-textarea" 
+                                rows="6"
+                                required
+                            >{{ product.description }}</textarea>
+                            <small>Provide complete product details</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save"></i> Update Product
+                            </button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Product Info Section -->
+            <section class="info-section">
+                <h3><i class="fas fa-info-circle"></i> Product Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Created Date:</label>
+                        <span>{{ product.id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Current Stock Status:</label>
+                        <span>
+                            {% if product.stock < 5 %}
+                                <span class="badge-danger">Out of Stock</span>
+                            {% elif product.stock < 10 %}
+                                <span class="badge-warning">Low Stock</span>
+                            {% else %}
+                                <span class="badge-success">In Stock</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <style>
+        .image-preview {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .image-name {
+            font-size: 12px;
+            color: #666;
+            margin: 0;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .info-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .info-item label {
+            font-weight: bold;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-item span {
+            color: #333;
+        }
+    </style>
+</body>
+</html>

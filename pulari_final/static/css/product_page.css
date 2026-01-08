@@ -1,0 +1,180 @@
+
+    :root {
+      /* --- PRO THEME VARIABLES --- */
+      --bg-body: #f8fafc;       /* Slate 50 */
+      --card-bg: #ffffff;       /* Pure White */
+      --primary: #0ea5e9;       /* Sky 500 */
+      --primary-dark: #0284c7;  /* Sky 600 */
+      --accent: #f59e0b;        /* Amber 500 */
+      --text-head: #0f172a;     /* Slate 900 */
+      --text-body: #475569;     /* Slate 600 */
+      
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; outline: none; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-body);
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    /* --- ANIMATION UTILITIES --- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- NAVIGATION --- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 8%; 
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px); 
+      position: sticky; top: 0; z-index: 1000;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-circle { 
+        width: 45px; height: 45px; border-radius: 50%; 
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+        color: white; font-weight:700; display:flex; align-items:center; justify-content:center;
+        box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4);
+    }
+    .logo-area h2 { font-size: 20px; margin: 0; color: var(--primary-dark); font-weight: 800; }
+    
+    nav ul { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+    nav ul li a { 
+        text-decoration: none; color: var(--text-head); font-weight: 500; font-size: 15px; 
+        transition: var(--transition); position: relative;
+    }
+    nav ul li a:hover { color: var(--primary); }
+
+    /* --- PAGE HEADER --- */
+    .header-section {
+      text-align: center;
+      padding: 80px 20px 40px;
+      background: linear-gradient(to bottom, #f0f9ff, #f8fafc);
+    }
+
+    .header-section h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      color: var(--text-head);
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .header-section span { color: var(--primary); }
+
+    .header-section p {
+      font-size: 16px; color: var(--text-body); max-width: 600px; margin: 15px auto 30px;
+    }
+
+    /* --- FILTER BUTTONS --- */
+    .filter-box {
+      display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 12px 30px;
+      border-radius: 50px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      color: var(--text-head);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      font-size: 15px;
+    }
+
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    }
+
+    /* --- CATALOG SECTION --- */
+    .catalog-section { padding: 40px 8% 80px; }
+
+    .category-label {
+      font-size: 24px; color: var(--text-head); margin: 50px 0 30px;
+      display: flex; align-items: center; gap: 12px; font-weight: 700;
+      padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;
+    }
+    .category-label i { color: var(--accent); }
+
+    .product-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;
+    }
+
+    /* --- PRO CARD DESIGN --- */
+    .p-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid #f1f5f9;
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .p-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-lg);
+      border-color: #bae6fd;
+    }
+
+    .img-box {
+      width: 100%; height: 220px; overflow: hidden;
+      background: #f1f5f9; position: relative;
+    }
+
+    .img-box img {
+      width: 100%; height: 100%; object-fit: cover; transition: 0.6s;
+    }
+
+    .p-card:hover .img-box img { transform: scale(1.1); }
+
+    .card-info { padding: 25px; text-align: center; }
+
+    .card-info h3 { margin: 0; font-size: 20px; color: var(--text-head); font-weight: 700; }
+    .card-info p { font-size: 14px; color: var(--text-body); margin: 10px 0; line-height: 1.5; }
+
+    .price-tag {
+      font-size: 24px; font-weight: 800; color: var(--primary);
+      display: block; margin: 15px 0;
+    }
+
+    .buy-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; border: none; padding: 14px; border-radius: 12px;
+      font-weight: 600; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px; transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2);
+    }
+
+    .buy-btn:hover { gap: 15px; box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4); transform: translateY(-2px); }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center; padding: 50px; border-top: 1px solid #e2e8f0;
+      background: white; font-size: 14px; color: #64748b;
+    }
+  

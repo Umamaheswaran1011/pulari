@@ -1,0 +1,321 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- INTERNAL CSS FOR INSTANT STYLING --- */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0fdf4; /* Light Green Bg */
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            color: #16a34a; /* Green */
+            font-size: 24px;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            color: #16a34a;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .form-label i {
+            color: #16a34a;
+            margin-right: 5px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box; /* Ensures padding doesn't break layout */
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        small {
+            display: block;
+            margin-top: 5px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* Row Layout */
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Buttons */
+        .form-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #16a34a;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #15803d;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* Help Section */
+        .help-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border-left: 5px solid #16a34a;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .help-section h3 {
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .help-section ul {
+            padding-left: 20px;
+            margin: 0;
+            color: #64748b;
+        }
+
+        .help-section li {
+            margin-bottom: 8px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .admin-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <h1><i class="fas fa-plus-circle"></i> Add New Product</h1>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'admin_dashboard' %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <section class="form-section">
+                <div class="form-container">
+                    
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" class="product-form">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-tag"></i> Product Name *
+                            </label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="e.g., PVC Pipe 1 inch" required>
+                            <small>Enter the product name clearly</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category" class="form-label">
+                                    <i class="fas fa-folder"></i> Category *
+                                </label>
+                                <select id="category" name="category" class="form-input" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Industrial Pipe">Industrial Pipe</option>
+                                    <option value="PVC Fitting">PVC Fitting</option>
+                                    <option value="Valve">Valve</option>
+                                    <option value="Agricultural">Agricultural</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <small>Choose the product category</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price" class="form-label">
+                                    <i class="fas fa-rupee-sign"></i> Price (₹) *
+                                </label>
+                                <input type="number" id="price" name="price" step="0.01" min="0" class="form-input" placeholder="e.g., 150.50" required>
+                                <small>Enter product price</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="stock" class="form-label">
+                                    <i class="fas fa-cubes"></i> Stock Quantity *
+                                </label>
+                                <input type="number" id="stock" name="stock" min="0" class="form-input" placeholder="e.g., 100" required>
+                                <small>Enter available stock quantity</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="image" class="form-label">
+                                    <i class="fas fa-image"></i> Product Image
+                                </label>
+                                <input type="file" id="image" name="image" class="form-input" accept="image/*">
+                                <small>Upload product image (optional)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-align-left"></i> Description *
+                            </label>
+                            <textarea id="description" name="description" class="form-textarea" rows="5" placeholder="Enter detailed product description..." required></textarea>
+                            <small>Provide complete product details</small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Add Product
+                            </button>
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="help-section">
+                <h3><i class="fas fa-info-circle"></i> Add Product Tips</h3>
+                <ul>
+                    <li><strong>Product Name:</strong> Use clear names (e.g., "1-inch PVC Elbow")</li>
+                    <li><strong>Category:</strong> Helps in filtering products easily</li>
+                    <li><strong>Stock:</strong> Enter actual physical quantity available</li>
+                    <li><strong>Image:</strong> Use square images for best display</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

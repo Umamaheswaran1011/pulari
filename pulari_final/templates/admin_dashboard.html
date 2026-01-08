@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Product Management</title>
+    <link rel="stylesheet" href="{% static 'css/admin_style.css' %}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+                <div class="header-actions">
+                    <a href="/admin/" class="btn-logout" style="background:#666;">View Admin</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon products">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Products</h3>
+                        <p class="stat-number">{{ total_products }}</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon low-stock">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Low Stock Items</h3>
+                        <p class="stat-number">{{ low_stock_products.count|default:low_stock_count }}</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="chart-section" style="margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <h2 style="margin-top: 0; color: #333; margin-bottom: 15px; font-size: 1.2rem;">
+                    <i class="fas fa-chart-bar"></i> Stock Inventory Overview
+                </h2>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="stockChart"></canvas>
+                </div>
+            </section>
+
+            <section class="products-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-list"></i> Products Inventory</h2>
+                </div>
+
+                {% if products %}
+                    <div class="table-wrapper">
+                        <table class="products-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th> 
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr class="{% if product.stock < 10 %}low-stock-row{% endif %}">
+                                        <td><strong>#{{ product.id }}</strong></td>
+                                        <td>
+                                            {% if product.image %}
+                                                <img src="{{ product.image.url }}" alt="img" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                            {% else %}
+                                                <span style="color:#ccc;"><i class="fas fa-image"></i></span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ product.name }}</td>
+                                        <td><span class="badge category-{{ product.category|slugify }}">{{ product.category }}</span></td>
+                                        <td><strong>₹{{ product.price }}</strong></td>
+                                        <td class="stock-cell">
+                                            <span class="stock-number">{{ product.stock }}</span>
+                                        </td>
+                                        <td>
+                                            {% if product.stock < 5 %}
+                                                <span class="badge-danger" style="padding: 4px 8px; border-radius: 4px; background: #fee2e2; color: #dc2626; font-size: 0.85rem;"><i class="fas fa-times-circle"></i> Out</span>
+                                            {% elif product.stock < 10 %}
+                                                <span class="badge-warning" style="padding: 4px 8px; border-radius: 4px; background: #fef3c7; color: #d97706; font-size: 0.85rem;"><i class="fas fa-exclamation"></i> Low</span>
+                                            {% else %}
+                                                <span class="badge-success" style="padding: 4px 8px; border-radius: 4px; background: #dcfce7; color: #16a34a; font-size: 0.85rem;"><i class="fas fa-check-circle"></i> In Stock</span>
+                                            {% endif %}
+                                        </td>
+                                        </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No Products Yet</h3>
+                        <p>Inventory is empty.</p>
+                    </div>
+                {% endif %}
+            </section>
+
+            {% if low_stock_products %}
+                <section class="alert-section">
+                    <h2><i class="fas fa-bell"></i> Stock Alerts</h2>
+                    <div class="alert-box alert-warning">
+                        <h3>Low Stock Items - Reorder Recommended!</h3>
+                        <ul>
+                            {% for product in low_stock_products %}
+                                <li><strong>{{ product.name }}</strong> ({{ product.stock }} remaining)</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        // --- CHART JS LOGIC ---
+        const ctx = document.getElementById('stockChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ p_names|safe|default:"[]" }},
+                    datasets: [{
+                        label: 'Available Stock',
+                        data: {{ p_stocks|safe|default:"[]" }},
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)', 
+                            'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)'
+                        ],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        
+        // REMOVED: Delete Logic Scripts (No longer needed)
+    </script>
+</body>
+</html>

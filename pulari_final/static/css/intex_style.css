@@ -1,0 +1,312 @@
+
+    :root {
+      /* --- COLOR PALETTE (Modern & Clean) --- */
+      --bg-body: #f8fafc;       /* Slate 50 (Very soft white) */
+      --card-bg: #ffffff;       /* Pure White */
+      
+      /* Primary Brand Colors */
+      --primary: #0ea5e9;       /* Sky 500 (Vibrant Blue) */
+      --primary-dark: #0284c7;  /* Sky 600 (Darker Blue for hover) */
+      --accent: #f59e0b;        /* Amber 500 (Orange/Gold) */
+      
+      /* Typography */
+      --text-head: #0f172a;     /* Slate 900 (Almost Black) */
+      --text-body: #475569;     /* Slate 600 (Soft Grey) */
+      
+      /* Effects */
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow-glow: 0 0 15px rgba(14, 165, 233, 0.3);
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; outline: none; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-body);
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    /* --- ANIMATION UTILITIES --- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-out;
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- NAVIGATION (Frosted Glass) --- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 8%; 
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px); 
+      -webkit-backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 1000;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    
+    .logo-circle { 
+        width: 45px; height: 45px; border-radius: 50%; 
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+        color: white; font-weight:700; display:flex; align-items:center; justify-content:center;
+        box-shadow: 0 4px 10px rgba(14, 165, 233, 0.4);
+    }
+    
+    .logo-area h2 { 
+        font-size: 20px; letter-spacing: 0.5px; margin: 0; 
+        color: var(--primary-dark); font-weight: 800; 
+    }
+    
+    nav ul { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+    nav ul li a { 
+        text-decoration: none; color: var(--text-head); font-weight: 500; font-size: 15px; 
+        transition: var(--transition); position: relative;
+    }
+    
+    /* Nav Hover Underline Effect */
+    nav ul li a::after {
+        content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
+        background-color: var(--primary); transition: 0.3s;
+    }
+    nav ul li a:hover { color: var(--primary); }
+    nav ul li a:hover::after { width: 100%; }
+
+    /* --- HERO SLIDER --- */
+    .expert-slider {
+        width: 100%; height: 75vh; overflow: hidden; position: relative; background: #000;
+    }
+
+    .slider-track {
+        display: flex; width: 300%; height: 100%;
+        animation: expertSlide 18s infinite cubic-bezier(0.45, 0, 0.55, 1);
+    }
+
+    .slide { width: 100%; height: 100%; position: relative; flex: 1; }
+    
+    .slide img {
+        width: 100%; height: 100%; object-fit: cover; opacity: 0.65;
+        transform: scale(1); animation: zoomEffect 18s infinite; 
+    }
+
+    @keyframes zoomEffect { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+    .slide-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.3));
+        display: flex; justify-content: center; align-items: center; text-align: center; padding: 0 20px;
+    }
+
+    .slide-content h1 {
+        font-size: clamp(38px, 6vw, 64px); font-weight: 800; margin: 0; color: white; line-height: 1.1;
+        text-shadow: 0 4px 15px rgba(0,0,0,0.4); letter-spacing: -1px;
+    }
+    .slide-content h1 span { color: #38bdf8; /* Lighter sky blue */ }
+
+    .slide-content p {
+        font-size: 18px; margin-top: 20px; color: #e2e8f0; max-width: 700px;
+        margin-left: auto; margin-right: auto; font-weight: 300;
+    }
+
+    @keyframes expertSlide {
+        0%, 28% { transform: translateX(0); }
+        33%, 61% { transform: translateX(-33.33%); }
+        66%, 95% { transform: translateX(-66.66%); }
+        100% { transform: translateX(0); }
+    }
+
+    /* Buttons */
+    .btn-main {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; padding: 16px 45px; border-radius: 50px; border: none;
+      font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 35px;
+      transition: var(--transition); box-shadow: var(--shadow-glow);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .btn-main:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 25px rgba(14, 165, 233, 0.5); }
+
+    /* --- STATS SECTION (Floating Card) --- */
+    .stats-container {
+      display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 30px;
+      background: var(--card-bg); padding: 50px; margin: 40px 8% 60px;
+      border-radius: 24px; box-shadow: var(--shadow-md);
+      border: 1px solid #f1f5f9; position: relative; top: -50px; z-index: 10;
+    }
+    .stat-item { text-align: center; flex: 1; min-width: 160px; }
+    .stat-item h3 { font-size: 42px; margin: 0; color: var(--primary-dark); font-weight: 800; }
+    .stat-item p { margin: 5px 0 0; font-size: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+
+    /* --- PRODUCTS --- */
+    section { padding: 40px 8% 80px; } /* Adjusted padding */
+    .section-title { 
+        text-align: center; font-size: 32px; margin-bottom: 50px; 
+        color: var(--text-head); text-transform: uppercase; font-weight: 800; letter-spacing: -0.5px; 
+    }
+    .section-title span { color: var(--primary); position: relative; display: inline-block; }
+    .section-title span::after {
+        content: ''; position: absolute; width: 100%; height: 8px; 
+        bottom: 2px; left: 0; background: rgba(14, 165, 233, 0.2); z-index: -1;
+    }
+    
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 35px; }
+    
+    .p-card {
+      background: var(--card-bg); padding: 40px 30px; border-radius: 24px; 
+      border: 1px solid #f1f5f9; text-align: center; transition: var(--transition);
+      box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    }
+    
+    /* Card Hover Effect */
+    .p-card::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+        background: var(--primary); transform: scaleX(0); transform-origin: left; transition: 0.4s;
+    }
+    .p-card:hover::before { transform: scaleX(1); }
+    .p-card:hover { transform: translateY(-12px); box-shadow: var(--shadow-lg); }
+    
+    .p-card i { 
+        font-size: 50px; background: #f0f9ff; width: 90px; height: 90px;
+        display: flex; align-items: center; justify-content: center; border-radius: 50%;
+        color: var(--primary); margin: 0 auto 20px; transition: 0.4s;
+    }
+    .p-card:hover i { background: var(--primary); color: white; transform: rotateY(180deg); }
+    
+    .p-card h3 { color: var(--text-head); margin: 15px 0; font-size: 20px; font-weight: 700; }
+    .p-card p { color: var(--text-body); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
+    
+    .buy-btn { 
+        background: var(--accent); color: white; border: none; padding: 12px 25px; 
+        border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; 
+        transition: 0.3s; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+    }
+    .buy-btn:hover { background: #d97706; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(245, 158, 11, 0.4); }
+
+    /* --- ORDER FORM (Modern & Clean) --- */
+    .order-container {
+        background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+        padding: 80px 20px; display: flex; justify-content: center; align-items: center;
+    }
+
+    .order-box {
+        width: 100%; max-width: 550px; padding: 50px; background: white;
+        border-radius: 30px; box-shadow: var(--shadow-lg); border: 1px solid white;
+        position: relative; overflow: hidden;
+    }
+    
+    /* Decorative Circle behind form */
+    .order-box::after {
+        content: ''; position: absolute; top: -50px; right: -50px; width: 150px; height: 150px;
+        background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, rgba(255,255,255,0) 70%);
+        border-radius: 50%;
+    }
+
+    .form-title { color: var(--text-head); text-align: center; font-size: 28px; font-weight: 800; margin: 0 0 35px; }
+
+    .form-group { margin-bottom: 20px; position: relative; }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 16px 20px; border-radius: 12px; border: 2px solid #e2e8f0;
+        font-size: 15px; font-family: 'Poppins', sans-serif; color: var(--text-head);
+        background: #f8fafc; outline: none; transition: 0.3s;
+    }
+
+    /* Input Focus Glow */
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+    }
+
+    .submit-btn {
+        width: 100%; padding: 18px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white; font-size: 18px; font-weight: 600; border: none; border-radius: 50px;
+        cursor: pointer; transition: 0.3s ease; margin-top: 20px; box-shadow: var(--shadow-glow);
+    }
+    .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(14, 165, 233, 0.4); }
+
+    /* --- MODAL --- */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+      display: none; justify-content: center; align-items: center; z-index: 2000;
+    }
+    .modal-content {
+      background: white; width: 90%; max-width: 480px; padding: 40px;
+      border-radius: 24px; position: relative; animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    
+    .close-modal { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #94a3b8; transition: 0.3s;}
+    .close-modal:hover { color: #ef4444; transform: rotate(90deg); }
+    
+    .res-box { background: #f0f9ff; padding: 25px; border-radius: 16px; border: 1px solid #bae6fd; margin-top: 25px; }
+
+    /* --- FOOTER --- */
+    footer { 
+        text-align: center; padding: 60px 20px; background: white; 
+        border-top: 1px solid #e2e8f0; font-size: 14px; color: #64748b; 
+    }
+    .about-box { 
+        background: white; padding: 50px; border-radius: 30px; margin-bottom: 50px;
+        border: 1px solid #f1f5f9; box-shadow: var(--shadow-md); 
+    }
+    .gst-tag {
+      background: #ecfdf5; color: #059669; padding: 6px 15px;
+      border-radius: 50px; font-size: 13px; font-weight: 700; display: inline-block; margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .expert-slider { height: 60vh; }
+        .stats-container { margin: -30px 5% 40px; padding: 30px; gap: 20px; }
+        .section-title { font-size: 26px; }
+        .slide-content h1 { font-size: 32px; }
+    }
+/* --- MOBILE RESPONSIVE FIXES --- */
+@media (max-width: 768px) {
+    
+    /* 1. Navbar Mobile Style */
+    nav {
+        flex-direction: column;
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* 2. Slider Text Size */
+    .slide-content h1 {
+        font-size: 32px; /* எழுத்து அளவை குறைத்தல் */
+    }
+    
+    .slide-content p {
+        font-size: 16px;
+    }
+
+    /* 3. Reduce Padding in Sections */
+    section {
+        padding: 40px 5% !important; /* இடைவெளியை குறைத்தல் */
+    }
+
+    .about-container {
+        flex-direction: column;
+    }
+    
+    /* 4. Statistics in 2 columns instead of 4 */
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}  

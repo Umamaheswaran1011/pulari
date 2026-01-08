@@ -1,0 +1,41 @@
+body {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* பட்டன் மீது மவுஸ் வைத்தால் பெரிதாகும் (Hover Effect) */
+.btn-success, .btn-primary {
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover, .btn-primary:hover {
+    transform: scale(1.05); /* சிறிது பெரிதாகும் */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* கார்டுகள் அனிமேஷன் */
+.card {
+    transition: transform 0.3s;
+}
+.card:hover {
+    transform: translateY(-5px); /* மேலே எழும்பும் */
+}
+/* --- LOGIN PAGE LOGO FIX --- */
+
+/* லாகின் பேஜ் லோகோ அளவை குறைப்பதற்கு */
+.login-logo img {
+    max-height: 100px !important;  /* உயரத்தை 100px ஆக குறைக்கும் */
+    max-width: 100% !important;    /* அகலம் screen-க்கு ஏற்றார் போல் இருக்கும் */
+    width: auto !important;
+    margin: 0 auto;                /* சென்டரில் வைக்கும் */
+    display: block;
+}
+
+.login-box, .register-box {
+    width: 400px !important;
+    margin: 7% auto;
+}

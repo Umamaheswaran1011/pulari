@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulari Pipes | Premium Product Catalog</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --accent: #f59e0b;
+      --text-head: #0f172a;
+      --text-body: #475569;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; outline: none; }
+
+    body {
+      margin: 0; font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-body); color: var(--text-body);
+      scroll-behavior: smooth; overflow-x: hidden;
+    }
+
+    /* --- NAVIGATION --- */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 8%; background: rgba(255, 255, 255, 0.95);
+      position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm);
+    }
+    .logo-area { display: flex; align-items: center; gap: 12px; }
+    .logo-circle { 
+        width: 45px; height: 45px; border-radius: 50%; 
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+        color: white; font-weight:700; display:flex; align-items:center; justify-content:center;
+    }
+    .logo-area h2 { font-size: 20px; margin: 0; color: var(--primary-dark); font-weight: 800; }
+    nav ul { list-style: none; display: flex; gap: 30px; margin: 0; padding: 0; }
+    nav ul li a { text-decoration: none; color: var(--text-head); font-weight: 500; }
+
+    /* --- SEARCH & FILTER SECTION (NEW) --- */
+    .filter-container {
+        max-width: 1200px; margin: 40px auto 20px; padding: 0 20px;
+        display: flex; flex-direction: column; gap: 20px; align-items: center;
+    }
+
+    /* Search Bar Design */
+    .search-box {
+        position: relative; width: 100%; max-width: 500px;
+    }
+    .search-box input {
+        width: 100%; padding: 15px 20px 15px 50px;
+        border-radius: 50px; border: 2px solid #e2e8f0;
+        font-size: 16px; transition: 0.3s;
+        box-shadow: var(--shadow-sm);
+    }
+    .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(14, 165, 233, 0.2); }
+    .search-box i {
+        position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+        color: #94a3b8; font-size: 18px;
+    }
+    .search-box button {
+        position: absolute; right: 5px; top: 5px; bottom: 5px;
+        border-radius: 40px; border: none; background: var(--primary);
+        color: white; padding: 0 25px; cursor: pointer; font-weight: 600;
+        transition: 0.3s;
+    }
+    .search-box button:hover { background: var(--primary-dark); }
+
+    /* Category Buttons Design */
+    .category-filters {
+        display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    }
+    .cat-btn {
+        padding: 8px 20px; border-radius: 30px; text-decoration: none;
+        background: white; border: 1px solid #e2e8f0; color: var(--text-body);
+        font-size: 14px; font-weight: 500; transition: 0.3s;
+        box-shadow: var(--shadow-sm);
+    }
+    .cat-btn:hover, .cat-btn.active {
+        background: var(--primary); color: white; border-color: var(--primary);
+        transform: translateY(-2px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+    }
+
+    /* --- PRODUCT GRID --- */
+    .catalog-section { padding: 20px 8% 80px; }
+    .product-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;
+    }
+    .p-card {
+      background: var(--card-bg); border-radius: 24px; border: 1px solid #f1f5f9;
+      overflow: hidden; transition: var(--transition); box-shadow: var(--shadow-sm);
+      display: flex; flex-direction: column;
+    }
+    .p-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
+    .img-box {
+      width: 100%; height: 220px; background: #f1f5f9; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+    .p-card:hover .img-box img { transform: scale(1.1); }
+    .card-info { padding: 25px; text-align: center; flex-grow: 1; display: flex; flex-direction: column; }
+    .card-info h3 { margin: 10px 0; font-size: 18px; color: var(--text-head); }
+    .price-tag { font-size: 22px; font-weight: 800; color: var(--primary); display: block; margin-bottom: 15px; }
+    
+    .buy-btn {
+      width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: 600;
+    }
+    .buy-btn:hover { box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4); transform: translateY(-2px); }
+    .buy-btn.disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    /* --- MODAL --- */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; }
+    .modal-content { background: white; padding: 30px; border-radius: 20px; width: 400px; max-width: 90%; position: relative; }
+    .close-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
+    .form-group { margin-bottom: 15px; }
+    .form-control { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; margin-top: 5px; }
+    
+    footer { text-align: center; padding: 40px; background: white; border-top: 1px solid #e2e8f0; font-size: 14px; color: #64748b; margin-top: 50px;}
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo-area">
+      <div class="logo-circle">PP</div>
+      <h2>PULARI PIPES</h2>
+    </div>
+    <ul>
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="#" style="color:var(--primary)">Catalog</a></li>
+      <li><a href="/admin/">Admin</a></li>
+    </ul>
+  </nav>
+
+  <div class="filter-container">
+    
+    <form class="search-box" method="GET" action="">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" name="q" placeholder="Search pipes, fittings..." value="{{ search_query|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="category-filters">
+        <a href="{% url 'product_page' %}" class="cat-btn {% if not active_category %}active{% endif %}">
+            All Products
+        </a>
+        
+        {% for cat in categories %}
+            <a href="?category={{ cat }}" class="cat-btn {% if active_category == cat %}active{% endif %}">
+                {{ cat }}
+            </a>
+        {% endfor %}
+    </div>
+  </div>
+
+  <main class="catalog-section">
+    
+    <h3 style="margin-bottom: 20px; color: #64748b;">
+        {% if search_query %}
+            Search results for: "<span style="color:var(--primary)">{{ search_query }}</span>"
+        {% elif active_category %}
+            Category: "<span style="color:var(--primary)">{{ active_category }}</span>"
+        {% else %}
+            All Available Items
+        {% endif %}
+    </h3>
+
+    <div class="product-grid">
+      {% for item in items %}
+      <div class="p-card">
+        <div class="img-box">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+            {% else %}
+                <div style="color:#ccc; font-size:40px;"><i class="fa-solid fa-image"></i></div>
+            {% endif %}
+        </div>
+        
+        <div class="card-info">
+          <span style="font-size:12px; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; font-weight:600; margin-bottom:5px;">{{ item.category }}</span>
+          <h3>{{ item.name }}</h3>
+          <span class="price-tag">₹{{ item.price }}</span>
+          
+          {% if item.stock > 0 %}
+              <button class="buy-btn" onclick="openOrderModal('{{ item.name }}')">
+                <i class="fa-solid fa-cart-shopping"></i> Order Now
+              </button>
+          {% else %}
+              <button class="buy-btn disabled" disabled>Out of Stock</button>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 60px; color: #64748b;">
+            <i class="fa-solid fa-box-open" style="font-size: 50px; margin-bottom: 20px; color: #cbd5e1;"></i>
+            <h3>No products found matching your search.</h3>
+            <a href="{% url 'product_page' %}" style="color:var(--primary); text-decoration:none; font-weight:600; margin-top:10px; display:inline-block;">Clear Filters</a>
+        </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 style="margin-top:0;">Place Order</h2>
+        <form id="orderForm">
+            <div class="form-group"><label>Name</label><input type="text" id="custName" class="form-control" required></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="custPhone" class="form-control" required></div>
+            <div class="form-group"><label>Email</label><input type="email" id="custEmail" class="form-control"></div>
+            <div class="form-group"><label>Product</label>
+                <select id="custProduct" class="form-control" required>
+                    <option value="" disabled>-- Select --</option>
+                    {% for item in items %}<option value="{{ item.name }}">{{ item.name }}</option>{% endfor %}
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Qty</label><input type="number" id="custQty" class="form-control" value="1" min="1" required></div>
+            <button type="submit" class="buy-btn">Confirm</button>
+        </form>
+    </div>
+  </div>
+
+  <script>
+    function openOrderModal(pName) {
+        document.getElementById('orderModal').style.display = 'flex';
+        const sel = document.getElementById('custProduct');
+        sel.value = pName;
+        // Logic to handle if product is not in current filtered list but user clicked it
+        let exists = false;
+        for(let i=0; i<sel.options.length; i++){ if(sel.options[i].value === pName) exists = true; }
+        if(!exists) { 
+            let opt = document.createElement('option'); opt.value = pName; opt.text = pName; 
+            sel.add(opt); sel.value = pName; 
+        }
+    }
+    function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+    
+    // Order Submit Logic
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = this.querySelector('button');
+        btn.innerHTML = 'Processing...'; btn.disabled = true;
+
+        const data = {
+            name: document.getElementById('custName').value,
+            phone: document.getElementById('custPhone').value,
+            email: document.getElementById('custEmail').value,
+            product: document.getElementById('custProduct').value,
+            quantity: document.getElementById('custQty').value
+        };
+
+        fetch('/orders/create/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(d => {
+            if(d.status === 'success') { alert('Order Placed Successfully!'); closeModal(); }
+            else { alert('Error: ' + d.message); }
+            btn.innerHTML = 'Confirm'; btn.disabled = false;
+        })
+        .catch(err => { alert('Network Error'); btn.innerHTML = 'Confirm'; btn.disabled = false; });
+    });
+    window.onclick = function(e) { if(e.target == document.getElementById('orderModal')) closeModal(); }
+  </script>
+</body>
+</html>
