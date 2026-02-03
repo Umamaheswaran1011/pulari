@@ -163,8 +163,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# உங்கள் ஜிமெயில் ஐடி
+
 EMAIL_HOST_USER = 'tndhoni2011@gmail.com' 
 
-# இங்கே நீங்கள் காப்பி செய்த 16-Digit App Password-ஐ போடவும்
 EMAIL_HOST_PASSWORD = 'trfgsdcvvzbiiiuc'
