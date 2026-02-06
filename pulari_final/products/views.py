@@ -92,29 +92,55 @@ def create_order(request):
             # -----------------------------------------------
             # 3. EMAIL SENDING LOGIC
             # -----------------------------------------------
+            email_errors = []
+            
             try:
                 # A. Email to Customer
                 if data.get('email'):
-                    send_mail(
-                        f"Order Confirmation - Pulari Pipes (Order #{order.id})",
-                        f"Hello {data.get('name')},\n\nThank you for ordering!\nProduct: {p_name}\nQty: {qty}\n\nWe will contact you shortly.",
-                        settings.EMAIL_HOST_USER,
-                        [data.get('email')],
-                        fail_silently=True,
-                    )
+                    try:
+                        send_mail(
+                            f"Order Confirmation - Pulari Pipes (Order #{order.id})",
+                            f"Hello {data.get('name')},\n\nThank you for ordering!\nProduct: {p_name}\nQty: {qty}\n\nWe will contact you shortly.",
+                            settings.EMAIL_HOST_USER,
+                            [data.get('email')],
+                            fail_silently=False,
+                        )
+                        print(f"✓ Customer email sent to {data.get('email')}")
+                    except Exception as e:
+                        error_msg = f"Customer Email Failed: {str(e)}"
+                        print(f"✗ {error_msg}")
+                        email_errors.append(error_msg)
+            except Exception as e:
+                error_msg = f"Customer Email Failed: {str(e)}"
+                print(f"✗ {error_msg}")
+                email_errors.append(error_msg)
 
+            try:
                 # B. Email to Admin
                 remaining_stock = product_obj.stock if product_obj else 'N/A'
-                send_mail(
-                    f"New Order Alert! (#{order.id})",
-                    f"New Order Received!\n\nName: {data.get('name')}\nPhone: {data.get('phone')}\nProduct: {p_name}\nQty: {qty}\nStock Remaining: {remaining_stock}",
-                    settings.EMAIL_HOST_USER,
-                    [settings.EMAIL_HOST_USER],
-                    fail_silently=True,
-                )
-                print("Emails sent successfully!")
+                try:
+                    send_mail(
+                        f"New Order Alert! (#{order.id})",
+                        f"New Order Received!\n\nName: {data.get('name')}\nPhone: {data.get('phone')}\nProduct: {p_name}\nQty: {qty}\nStock Remaining: {remaining_stock}",
+                        settings.EMAIL_HOST_USER,
+                        [settings.EMAIL_HOST_USER],
+                        fail_silently=False,
+                    )
+                    print(f"✓ Admin email sent to {settings.EMAIL_HOST_USER}")
+                except Exception as e:
+                    error_msg = f"Admin Email Failed: {str(e)}"
+                    print(f"✗ {error_msg}")
+                    email_errors.append(error_msg)
             except Exception as e:
-                print(f"Email Failed: {e}")
+                error_msg = f"Admin Email Failed: {str(e)}"
+                print(f"✗ {error_msg}")
+                email_errors.append(error_msg)
+            
+            # Log all email errors
+            if email_errors:
+                print(f"\n⚠️ EMAIL ERRORS:\n" + "\n".join(email_errors))
+            else:
+                print("✓ All emails sent successfully!")
 
             return JsonResponse({'status': 'success', 'order_id': order.id})
 

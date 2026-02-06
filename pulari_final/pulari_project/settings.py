@@ -158,12 +158,21 @@ JAZZMIN_SETTINGS = {
 }
 
 # EMAIL CONFIGURATION
+# NOTE: Gmail requires an APP PASSWORD (not your regular password)
+# To set up:
+# 1. Go to https://myaccount.google.com/apppasswords
+# 2. Generate a 16-character app password
+# 3. Replace EMAIL_HOST_PASSWORD below with that password
+# 4. Make sure 2-Factor Authentication is enabled on your Gmail account
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-
+# Update this with your Gmail address
 EMAIL_HOST_USER = 'tndhoni2011@gmail.com' 
 
-EMAIL_HOST_PASSWORD = 'trfgsdcvvzbiiiuc'
+# IMPORTANT: Use the 16-character APP PASSWORD from Google, not your Gmail password!
+# Error: If you get "Username and Password not accepted", the password below is invalid
+EMAIL_HOST_PASSWORD = 'zzsnbqtmambvswug'  # This password is invalid - generate a new one from Google
