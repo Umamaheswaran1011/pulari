@@ -5,8 +5,12 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.conf import settings 
 import json
+import random
+import string
 from .models import Product, Order
 
 # ==========================================
@@ -143,6 +147,167 @@ def create_order(request):
                 print("✓ All emails sent successfully!")
 
             return JsonResponse({'status': 'success', 'order_id': order.id})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+            
+    return JsonResponse({'status': 'error', 'message': 'Only POST allowed'}, status=405)
+
+
+# NEW: 3A. Send Verification Code
+@csrf_exempt
+def send_verification_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email', '').strip()
+            
+            if not email:
+                return JsonResponse({'status': 'error', 'message': 'Email is required'}, status=400)
+
+            # Validate email format
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({'status': 'error', 'message': 'Incorrect email'}, status=400)
+            
+            # Generate 6-digit verification code
+            verification_code = ''.join(random.choices(string.digits, k=6))
+            
+            # Send verification email
+            try:
+                send_mail(
+                    "Email Verification - Pulari Pipes Order",
+                    f"Hello,\n\nYour verification code is: {verification_code}\n\nPlease enter this code to confirm your email and complete your order.\n\nThis code is valid for 10 minutes.\n\nThanks,\nPulari Pipes Team",
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
+                print(f"✓ Verification email sent to {email}")
+                
+                return JsonResponse({
+                    'status': 'success', 
+                    'message': 'Verification code sent to your email',
+                    'verification_code': verification_code  # Return code for demo (remove in production)
+                })
+            except Exception as e:
+                print(f"✗ Email sending failed: {str(e)}")
+                return JsonResponse({
+                    'status': 'error', 
+                    'message': f'Failed to send email: {str(e)}'
+                }, status=400)
+                
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+    return JsonResponse({'status': 'error', 'message': 'Only POST allowed'}, status=405)
+
+
+# NEW: 3B. Verify Code and Create Order
+@csrf_exempt
+def verify_and_create_order(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            p_name = data.get('product')
+            qty = int(data.get('quantity'))
+            verification_code = data.get('verification_code', '')
+            email_code = data.get('email_code', '')
+
+            # Verify code matches
+            if verification_code != email_code:
+                return JsonResponse({
+                    'status': 'error', 
+                    'message': 'Invalid verification code. Please check your email.'
+                }, status=400)
+
+            # -----------------------------------------------
+            # 1. STOCK CHECK & REDUCTION LOGIC
+            # -----------------------------------------------
+            product_obj = None
+            try:
+                product_obj = Product.objects.get(name=p_name)
+            except Product.DoesNotExist:
+                pass
+
+            if product_obj:
+                if product_obj.stock >= qty:
+                    product_obj.stock = product_obj.stock - qty
+                    product_obj.save()
+                else:
+                    return JsonResponse({
+                        'status': 'error', 
+                        'message': f'Sorry! Only {product_obj.stock} items left in stock.'
+                    }, status=400)
+            
+            # -----------------------------------------------
+            # 2. SAVE ORDER WITH VERIFIED EMAIL
+            # -----------------------------------------------
+            order = Order.objects.create(
+                customer_name=data.get('name'), 
+                phone=data.get('phone'),
+                email=data.get('email', ''),   
+                product=p_name,
+                quantity=qty,
+                message=data.get('message', ''),
+                email_verified=True,
+                verification_code=None
+            )
+
+            # -----------------------------------------------
+            # 3. EMAIL SENDING LOGIC
+            # -----------------------------------------------
+            email_errors = []
+            
+            try:
+                # A. Email to Customer - Order Confirmation
+                if data.get('email'):
+                    try:
+                        send_mail(
+                            f"✓ Order Confirmed - Pulari Pipes (Order #{order.id})",
+                            f"Hello {data.get('name')},\n\nThank you for verifying your email!\nYour order has been successfully placed.\n\nOrder Details:\nProduct: {p_name}\nQuantity: {qty}\nOrder ID: {order.id}\n\nWe will contact you shortly to confirm delivery details.\n\nThanks,\nPulari Pipes Team",
+                            settings.EMAIL_HOST_USER,
+                            [data.get('email')],
+                            fail_silently=False,
+                        )
+                        print(f"✓ Order confirmation email sent to {data.get('email')}")
+                    except Exception as e:
+                        error_msg = f"Customer Email Failed: {str(e)}"
+                        print(f"✗ {error_msg}")
+                        email_errors.append(error_msg)
+            except Exception as e:
+                error_msg = f"Customer Email Failed: {str(e)}"
+                print(f"✗ {error_msg}")
+                email_errors.append(error_msg)
+
+            try:
+                # B. Email to Admin
+                remaining_stock = product_obj.stock if product_obj else 'N/A'
+                try:
+                    send_mail(
+                        f"New Order Alert! (#{order.id}) - Email Verified",
+                        f"New Order Received with Email Verification!\n\nName: {data.get('name')}\nEmail: {data.get('email')}\nPhone: {data.get('phone')}\nProduct: {p_name}\nQty: {qty}\nStock Remaining: {remaining_stock}",
+                        settings.EMAIL_HOST_USER,
+                        [settings.EMAIL_HOST_USER],
+                        fail_silently=False,
+                    )
+                    print(f"✓ Admin email sent to {settings.EMAIL_HOST_USER}")
+                except Exception as e:
+                    error_msg = f"Admin Email Failed: {str(e)}"
+                    print(f"✗ {error_msg}")
+                    email_errors.append(error_msg)
+            except Exception as e:
+                error_msg = f"Admin Email Failed: {str(e)}"
+                print(f"✗ {error_msg}")
+                email_errors.append(error_msg)
+            
+            if email_errors:
+                print(f"\n⚠️ EMAIL ERRORS:\n" + "\n".join(email_errors))
+            else:
+                print("✓ All emails sent successfully!")
+
+            return JsonResponse({'status': 'success', 'order_id': order.id, 'message': 'Order placed successfully!'})
 
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

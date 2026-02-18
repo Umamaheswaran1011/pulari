@@ -96,11 +96,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# --- STATIC & MEDIA FILES (Main Changes Here) ---
 
 STATIC_URL = '/static/'
 
-# Idhu romba mukkiyam! Idhu illana CSS load aagadhu.
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
